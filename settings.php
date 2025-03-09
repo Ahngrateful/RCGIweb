@@ -78,6 +78,7 @@
             top: 80px;
             width: 250px; /* Fixed width */
             z-index: 1000;
+            padding: 1rem;
         }
 
         .list-group-item {
@@ -156,7 +157,7 @@
             margin-top: 5px;
         }
 
-        .settings-container .save-button {
+        .settings-container .submit {
             width: 100%;
             padding: 10px;
             background-color: #7A8D7A;
@@ -168,7 +169,7 @@
             margin-top: 15px;
         }
 
-        .settings-container .save-button:hover {
+        .settings-container .submit:hover {
             background-color: #5f6e5f;
         }
 
@@ -183,6 +184,22 @@
                 height: auto;
                 padding-bottom: 10px;
             }
+        }
+
+        .addadmin-container .submit {
+            width: 20%;
+            padding: 10px;
+            background-color: #7A8D7A;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .addadmin-container .submit:hover {
+            background-color: #5f6e5f;
         }
     </style>
 </head>
@@ -201,6 +218,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Sidebar -->
 <div class="sidebar">
@@ -225,22 +243,49 @@
 
 <!-- Settings Form -->
 <div class="main-content">
-    <div class="settings-container">
-        <label for="companyname">Company Name</label>
-        <input type="text" id="companyname" placeholder="Your Company Name" required />
+    <div class="row">
+        <div class="settings-container">
+            <!-- General Settings -->
+                <label for="companyname">Company Name</label>
+                <input type="text" id="companyname" placeholder="Your Company Name" required />
 
-        <label for="timezone">Time Zone</label>
-        <input type="text" id="timezone" placeholder="(GMT-08:00) Pacific Time" required />
+                <label for="timezone">Time Zone</label>
+                <input type="text" id="timezone" placeholder="(GMT-08:00) Pacific Time" required />
 
-        <label for="threshold">Late Threshold</label>
-        <div class="input-container">
-            <input type="number" id="threshold" value="15" required /> Minutes
+                <label for="threshold">Late Threshold</label>
+                <div class="input-container">
+                    <input type="number" id="threshold" value="15" required /> Minutes
+                </div>
+                <p class="small-text">Specify how many minutes after scheduled time should be considered late</p>
+
+                <button type="submit" class="submit">Save Changes</button>
+
         </div>
-        <p class="small-text">Specify how many minutes after scheduled time should be considered late</p>
+        <div class="settings-container">
+         <!-- Admin Settings -->
+          <h4>Change Admin Password</h4>
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" placeholder="Enter current password" required />
 
-        <button type="submit" class="save-button">Save Changes</button>
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" placeholder="Enter new password" required />
+
+            <label for="confirm-password">Confirm New Password</label>
+            <input type="password" id="confirm-password" placeholder="Confirm new password" required />
+
+            <button class="submit" onclick="changePassword()">Change Password</button>
+
+            <hr>
+
+        </div>
+        <div class="addadmin-container">
+        <button class="submit" onclick="window.location.href='admin_registration.php';">
+            Add New Admin?
+        </button>
+    </div>
     </div>
 </div>
+
 
 </body>
 </html>
