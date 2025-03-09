@@ -1,3 +1,84 @@
+<?php
+session_start();
+
+// Make sure admin_ID is set in session
+if (!isset($_SESSION['admin_ID'])) {
+    echo "Unauthorized. Admin not logged in.";
+    exit;
+}
+$admin_id = $_SESSION['admin_ID'];
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_rcgi";
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $employee_id = $_POST['employee_ID'];
+    $name = $_POST['name'];
+    $fingerprint_id = $_POST['fingerprint_ID'];
+    $startshift = $_POST['shift_start_time'];
+    $endshift = $_POST['shift_end_time'];
+    $hiredate = $_POST['hire_date'];
+    $org = $_POST['org'];
+
+    // Check if an image is uploaded
+    $employee_image = null;
+    if (isset($_FILES['employee_image']) && $_FILES['employee_image']['error'] === UPLOAD_ERR_OK) {
+        $target_dir = "employee_image/";
+        $file_name = basename($_FILES['employee_image']['name']);
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+        if (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+            $unique_name = uniqid() . "_" . $file_name;
+            $target_file = $target_dir . $unique_name;
+
+            if (move_uploaded_file($_FILES['employee_image']['tmp_name'], $target_file)) {
+                $employee_image = $target_file;
+            } else {
+                echo "<script>alert('Error uploading the file.');</script>";
+                exit;
+            }
+        } else {
+            echo "<script>alert('Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.');</script>";
+            exit;
+        }
+    } else {
+        echo "<script>alert('No image uploaded or upload error.');</script>";        
+        exit;
+    }
+
+    $conn->begin_transaction();
+    try {
+        // Updated SQL to include admin_ID
+        $stmt = $conn->prepare("INSERT INTO employee (admin_ID, employee_id, name, fingerprint_id, photo, hire_date, shift_start_time, shift_end_time, org) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisisssss", $admin_id, $employee_id, $name, $fingerprint_id, $employee_image, $hiredate, $startshift, $endshift, $org);
+        $stmt->execute();
+
+        $conn->commit();
+        echo "<script>alert('Employee added successfully.');</script>";
+    } catch (Exception $e) {
+        $conn->rollback();
+        error_log($e->getMessage());
+        echo "<script>alert('Error adding employee. Please try again.');</script>";
+    }
+}
+
+// Fetch all employees
+$sql = "SELECT employee_id, photo, name, fingerprint_id, shift_start_time, shift_end_time, hire_date, org FROM employee";
+$result = $conn->query($sql);
+
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +155,7 @@
             padding-top: 20px;
             position: fixed; /* Keep sidebar fixed */
             left: 0;
-            top: 80px;
+            top: 70px;
             width: 250px; /* Fixed width */
             z-index: 1000;
         }
@@ -217,51 +298,73 @@
     </div>
 
     <!-- Main Content -->
-    <div class="col-md-10 py-4">
-      <!-- Add New Employee -->
-      <div class="card mb-4">
-        <div class="card-header fw-bold bg-light">Add New Employees</div>
-        <div class="card-body row">
-          <div class="col-md-3 text-center">
-            <img src="placeholder.jpg" class="img-thumbnail mb-3" alt="Profile Image" style="width: 120px; height: 120px;">
-            <input type="file" class="form-control">
-          </div>
-          <div class="col-md-9">
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label class="form-label">Employee ID</label>
-                <input type="text" class="form-control" placeholder="Enter employee ID">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control" placeholder="Enter name">
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Fingerprint ID</label>
-                <input type="text" class="form-control" placeholder="Enter fingerprint ID">
-              </div>
+<form action="" method="POST" enctype="multipart/form-data" class="mt-4">
+  <div class="col-md-10 py-4">
+    <!-- Add New Employee -->
+    <div class="card mb-4">
+      <div class="card-header fw-bold bg-light">Add New Employees</div>
+      <div class="card-body row">
+        <!-- Profile Image -->
+        <div class="col-md-3 text-center">
+          <img src="placeholder.jpg" class="img-thumbnail mb-3" alt="Profile Image" id="employee_image" style="width: 120px; height: 120px;">
+          <input type="file" class="form-control" name="employee_image" required>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="col-md-9">
+          <!-- Row for ID, Name, Fingerprint, Hire Date -->
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Employee ID</label>
+              <input type="text" class="form-control" name="employee_ID" placeholder="Enter employee ID" required>
             </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Shift</label>
-                <select class="form-select">
-                  <option selected>Select Shift</option>
-                  <option>8:00 AM - 5:00 PM</option>
-                  <option>9:00 AM - 6:00 PM</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Organization</label>
-                <select class="form-select">
-                  <option selected>RCGI</option>
-                  <option>Terraco</option>
-                </select>
-              </div>
+            <div class="col-md-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" name="name" placeholder="Enter name" required>
             </div>
-            <button class="btn btn-primary">ADD NEW</button>
+            <div class="col-md-3">
+              <label class="form-label">Fingerprint ID</label>
+              <input type="text" class="form-control" name="fingerprint_ID" placeholder="Enter fingerprint ID" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Hire Date</label>
+              <input type="date" class="form-control" name="hire_date" required>
+            </div>
           </div>
+
+          <!-- Row for Shift & Organization -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="form-label">Start Shift</label>
+              <select class="form-select" name="shift_start_time" required>
+                <option selected>Select Shift</option>
+                <option>8:00 AM</option>
+                <option>9:00 AM</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">End Shift</label>
+              <select class="form-select" name="shift_end_time" required>
+                <option selected>Select Shift</option>
+                <option>5:00 PM</option>
+                <option>6:00 PM</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Organization</label>
+              <select class="form-select" name="org" required>
+                <option selected>RCGI</option>
+                <option>Terraco</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary">ADD NEW</button>
         </div>
       </div>
+    </div>
+</form>
 
       <!-- Employee List -->
       <div class="card">
@@ -281,31 +384,31 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>EMP001</td>
-                <td><img src="placeholder.jpg" class="img-thumbnail" style="width: 60px;"></td>
-                <td>Shaima Mangadang</td>
-                <td>FP001</td>
-                <td>8:00 AM - 5:00 PM</td>
-                <td>RCGI</td>
-                <td>2023-06-08</td>
-                <td>
-                  <button class="icon-btn"><i class="fas fa-edit"></i></button>
-                  <button class="icon-btn"><i class="fas fa-trash"></i></button>
-                </td>
-              </tr>
-              <tr>
-                <td>EMP002</td>
-                <td><img src="placeholder.jpg" class="img-thumbnail" style="width: 60px;"></td>
-                <td>Danica Lepardo</td>
-                <td>FP002</td>
-                <td>9:00 AM - 6:00 PM</td>
-                <td>Terraco</td>
-                <td>2024-08-11</td>
-                <td>
-                  <button class="icon-btn"><i class="fas fa-edit"></i></button>
-                  <button class="icon-btn"><i class="fas fa-trash"></i></button>
-                </td>
+            <?php 
+        if ($result && $result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row['employee_id']) . "</td>";
+            echo "<td><img src='" . htmlspecialchars($row['photo']) . "' class='img-thumbnail' style='width: 60px; height: 60px;' onerror=\"this.src='placeholder.jpg'\" /></td>";
+            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['fingerprint_id']) . "</td>";
+            echo "<td>" . date("H:i", strtotime($row['shift_start_time'])) . "AM - " . date("H:i", strtotime($row['shift_end_time'])) .  "PM " . "</td>";
+            echo "<td>" . htmlspecialchars($row['org']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['hire_date']) . "</td>";
+            echo "<td>
+                    <a href='edit_employee.php?id={$row['employee_id']}' class='icon-btn'>
+                      <i class='fas fa-edit'></i>
+                    </a>
+                    <a href='delete_employee.php?id={$row['employee_id']}' class='icon-btn' onclick='return confirm(\"Are you sure you want to delete this employee?\")'>
+                      <i class='fas fa-trash'></i>
+                    </a>
+                  </td>";
+            echo "</tr>";
+          }
+        } else {
+          echo "<tr><td colspan='8'>No employees found.</td></tr>";
+        }
+        ?>
               </tr>
             </tbody>
           </table>
