@@ -85,8 +85,9 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RCGI | Manage Employees</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="icon" href="pics\rcgiph_logo.jpg" type="logo">
   <style>
        body {
             font-family: 'Inter', sans-serif;
@@ -271,32 +272,41 @@ $conn->close();
 <body>
 
 <!-- Navbar -->
-<nav class="navbar">
-  <div class="left">
-    <i class="fas fa-building"></i>
-    <span>Manage Employees</span>
-  </div>
-  <div class="right">
-    <i class="fas fa-bell"></i>
-    <div class="profile-icon">
-      <i class="fas fa-user"></i>
+<div class="navbar">
+    <div class="left">
+        <i class="fas fa-building"></i>
+        <span>Dashboard</span>
     </div>
-  </div>
-</nav>
+    <div class="right">
+        <i class="fas fa-bell"></i>
+        <div class="profile">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <div class="col-md-2 sidebar py-3">
-      <div class="list-group">
-        <a href="dashboard.php" class="list-group-item"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
-        <a href="view-attendance.php" class="list-group-item"><i class="fas fa-clock me-2"></i> View Attendance</a>
-        <a href="manage-employee.php" class="list-group-item active"><i class="fas fa-users me-2"></i> Manage Employees</a>
-        <a href="settings.php" class="list-group-item"><i class="fas fa-cog me-2"></i> Settings</a>
-        <a href="logoutpage.php" class="list-group-item"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
-      </div>
+    <div class="sidebar">
+    <div class="list-group">
+            <a href="dashboard.php" class="list-group-item list-group-item-action">
+                <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
+            </a>
+            <a href="view-attendance.php" class="list-group-item list-group-item-action">
+                <i class="fas fa-clock sidebar-icon"></i> View Attendance
+            </a>
+            <a href="manage-employee.php" class="list-group-item list-group-item-action active">
+                <i class="fas fa-users sidebar-icon"></i> Manage Employees
+            </a>
+            <a href="settings.php" class="list-group-item list-group-item-action">
+                <i class="fas fa-cog sidebar-icon"></i> Settings
+            </a>
+            <a href="logoutpage.php" class="list-group-item list-group-item-action">
+                <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
+            </a>
+        </div>
     </div>
-
     <!-- Main Content -->
 <form action="" method="POST" enctype="multipart/form-data" class="mt-4">
   <div class="col-md-10 py-4">
