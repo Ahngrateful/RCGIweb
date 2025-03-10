@@ -1,3 +1,27 @@
+<?php
+session_start();
+
+// Make sure admin_ID is set in session
+if (!isset($_SESSION['admin_ID'])) {
+    echo "Unauthorized. Admin not logged in.";
+    exit;
+}
+$admin_id = $_SESSION['admin_ID'];
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_rcgi";
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +92,7 @@
       padding-top: 20px;
       position: fixed;
       left: 0;
-      top: 80px;
+      top: 70px;
       width: 250px;
       z-index: 1000;
     }
