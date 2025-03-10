@@ -70,14 +70,15 @@
             background-color: #f8f9fa;
             height: 100vh; /* Full height */
             display: flex;
-            flex-direction: column;
+            flex-direction: column; 
             border-right: 1px solid #ddd;
             padding-top: 20px;
             position: fixed; /* Keep sidebar fixed */
             left: 0;
-            top: 80px;
+            top: 70px;
             width: 250px; /* Fixed width */
             z-index: 1000;
+            padding: 1rem;
         }
 
         .list-group-item {
