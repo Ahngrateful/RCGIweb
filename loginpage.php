@@ -19,21 +19,20 @@ if (isset($_POST['login'])) {
     $password = $_POST['psw'];
 
     // Query to check username and password directly
-    $stmt = $conn->prepare("SELECT adminID, username FROM admins WHERE username = ? AND password = ?");
-    $stmt->bind_param("ss", $username, $password);
+    $stmt = $conn->prepare("SELECT admin_ID, username, password FROM admin WHERE username = ?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
-    $stmt->store_result();
 
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $db_username);
-        $stmt->fetch();
+    // Bind result
+    $stmt->bind_result($admin_id, $admin_user, $db_password);
+    $stmt->fetch();
 
-        // Store session data
-        $_SESSION['admin_ID'] = $id;
-        $_SESSION['username'] = $db_username;
+    if ($db_password === $password) {
+        $_SESSION['admin_ID'] = $admin_id; // Store admin ID in session
+        $_SESSION['admin_user'] = $admin_user;
 
-        header("Location: dashboard.php"); // Redirect to the dashboard
-        exit();
+        header("Location: dashboard.php");
+        exit;
     } else {
         echo "<script>alert('Invalid username or password!');</script>";
     }
@@ -43,6 +42,7 @@ if (isset($_POST['login'])) {
 
 $conn->close();
 ?>
+
 
 
 <!DOCTYPE html>
