@@ -9,110 +9,93 @@
     <link rel="icon" href="pics/rcgiph_logo.jpg" type="image/x-icon">
     <style>
        body {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 15px;
-            background: #F3F4F6;
-        }
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      background: #F3F4F6;
+      margin: 0;
+    }
 
-        /* Navbar */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: white;
-            padding: 15px 20px;
-            border-bottom: 1px solid #DFDDDD;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid #DFDDDD;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      height: 60px;
+    }
 
-        /* Left Section */
-        .navbar .left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .navbar .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-        /* Icons */
-        .navbar .left i {
-            font-size: 22px;
-        }
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-        /* Right Section */
-        .navbar .right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    .navbar .profile {
+      width: 35px;
+      height: 35px;
+      background: black;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
 
-        /* Bell Icon */
-        .navbar .right i {
-            font-size: 20px;
-            cursor: pointer;
-        }
+    .layout {
+      display: flex;
+      height: calc(100vh - 60px); /* full height minus navbar */
+    }
 
-        /* Profile Icon */
-        .navbar .profile {
-            width: 35px;
-            height: 35px;
-            background: black;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
+    .sidebar {
+      background-color: #f8f9fa;
+      width: 250px;
+      border-right: 1px solid #ddd;
+      padding-top: 20px;
+    }
 
-        /* Sidebar */
-        .sidebar {
-            background-color: #f8f9fa;
-            height: 100vh; /* Full height */
-            display: flex;
-            flex-direction: column; 
-            border-right: 1px solid #ddd;
-            padding-top: 20px;
-            position: fixed; /* Keep sidebar fixed */
-            left: 0;
-            top: 70px;
-            width: 250px; /* Fixed width */
-            z-index: 1000;
-            padding: 1rem;
-        }
+    .list-group-item {
+      background: none;
+      border: none;
+      padding: 12px 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      color: #000;
+      transition: background 0.3s ease-in-out;
+    }
 
-        .list-group-item {
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            color: #000;
-            transition: background 0.3s ease-in-out;
-        }
+    .list-group-item:hover {
+      background: #e0e0e0;
+    }
 
-        .list-group-item:hover {
-            background: #e0e0e0;
-        }
+    .list-group-item.active {
+      background-color: #99A191;
+      color: white;
+      border-radius: 5px;
+    }
 
-        .list-group-item.active {
-            background-color: #99A191;
-            color: white;
-            border-radius: 5px;
-        }
+    .sidebar-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
 
-        .sidebar-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
 
         /* Settings Container */
         .admin-form {
@@ -203,29 +186,30 @@
     </div>
 </div>
 
-<!-- Sidebar -->
-<div class="sidebar">
-    <div class="list-group">
-        <a href="dashboard.php" class="list-group-item list-group-item-action">
-            <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
-        </a>
-        <a href="view-attendance.php" class="list-group-item list-group-item-action">
-            <i class="fas fa-clock sidebar-icon"></i> View Attendance
-        </a>
-        <a href="manage-employee.php" class="list-group-item list-group-item-action">
-            <i class="fas fa-users sidebar-icon"></i> Manage Employees
-        </a>
-        <a href="settings.php" class="list-group-item list-group-item-action active">
-            <i class="fas fa-cog sidebar-icon"></i> Settings
-        </a>
-        <a href="logoutpage.php" class="list-group-item list-group-item-action">
-            <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
-        </a>
-    </div>
-</div>
+  <!-- Layout -->
+<div class="container-fluid">
+    <div class="row vh-100">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="list-group">
+                <a href="dashboard.php" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
+                </a>
+                <a href="view-attendance.php" class="list-group-item list-group-item-action">
+                    <i class="fas fa-clock sidebar-icon"></i> View Attendance
+                </a>
+                <a href="manage-employee.php" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users sidebar-icon"></i> Manage Employees
+                </a>
+                <a href="settings.php" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-cog sidebar-icon"></i> Settings
+                </a>
+                <a href="logoutpage.php" class="list-group-item list-group-item-action">
+                    <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
+                </a>
+            </div>
+        </div>
 
-<!-- Settings Form -->
-<div class="main-content">
     <div class="admin-form">
 
         <label for="uname">Username</label>
@@ -240,6 +224,7 @@
         <button type="submit" name="create" class="save-button">Add admin</button>
     </div>
 </div>
+    </div>
 
 
 </body>
