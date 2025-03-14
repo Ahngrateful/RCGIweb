@@ -37,16 +37,18 @@ $conn->close();
       font-weight: 600;
       font-size: 15px;
       background: #F3F4F6;
+      margin: 0;
     }
 
     .navbar {
-        display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: white;
-            padding: 15px 20px;
-            border-bottom: 1px solid #DFDDDD;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid #DFDDDD;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      height: 60px;
     }
 
     .navbar .left {
@@ -57,19 +59,10 @@ $conn->close();
       font-weight: bold;
     }
 
-    .navbar .left i {
-      font-size: 22px;
-    }
-
     .navbar .right {
       display: flex;
       align-items: center;
       gap: 15px;
-    }
-
-    .navbar .right i {
-      font-size: 20px;
-      cursor: pointer;
     }
 
     .navbar .profile {
@@ -83,18 +76,19 @@ $conn->close();
       border-radius: 50%;
     }
 
+    .layout {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
     .sidebar {
       background-color: #f8f9fa;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      width: 250px;
       border-right: 1px solid #ddd;
       padding-top: 20px;
-      position: fixed;
-      left: 0;
-      top: 70px;
-      width: 250px;
-      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .list-group-item {
@@ -125,8 +119,9 @@ $conn->close();
     }
 
     .main-content {
-      margin-left: 250px;
+      flex: 1;
       padding: 20px;
+      overflow-y: auto;
     }
 
     .card {
@@ -163,17 +158,20 @@ $conn->close();
     }
 
     @media (max-width: 768px) {
-            .main-content {
-                margin-left: 0;
-                padding: 10px;
-            }
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-                padding-bottom: 10px;
-            }
-        }
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -193,86 +191,91 @@ $conn->close();
 </div>
 
 <div class="container-fluid">
-  <div class="row">
-    <!-- Sidebar -->
-    <div class="col-md-2 sidebar">
-      <div class="list-group">
-        <a href="dashboard.php" class="list-group-item list-group-item-action active">
-          <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
-        </a>
-        <a href="view-attendance.php" class="list-group-item list-group-item-action">
-          <i class="fas fa-clock sidebar-icon"></i> View Attendance
-        </a>
-        <a href="manage-employee.php" class="list-group-item list-group-item-action">
-          <i class="fas fa-users sidebar-icon"></i> Manage Employees
-        </a>
-        <a href="settings.php" class="list-group-item list-group-item-action">
-          <i class="fas fa-cog sidebar-icon"></i> Settings
-        </a>
-        <a href="logoutpage.php" class="list-group-item list-group-item-action">
-          <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
-        </a>
+    <div class="row vh-100">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="list-group w-100">
+      <a href="dashboard.php" class="list-group-item list-group-item-action active">
+        <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
+      </a>
+      <a href="view-attendance.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-clock sidebar-icon"></i> View Attendance
+      </a>
+      <a href="manage-employee.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-users sidebar-icon"></i> Manage Employees
+      </a>
+      <a href="settings.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-cog sidebar-icon"></i> Settings
+      </a>
+      <a href="logoutpage.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
+      </a>
+    </div>
+
+    <div class="w-100 text-center pb-3">
+      <img src="pics/rcgiph_logo.jpg" class="img-fluid" alt="Logo" style="max-width: 50%; height: auto;">
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h4>Total Employees</h4>
+          <p>156 <i class="fas fa-users"></i></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h4>Present Today</h4>
+          <p>142 <i class="fas fa-user-check"></i></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h4>On Leave</h4>
+          <p>14 <i class="fas fa-user-times"></i></p>
+        </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="col-md-10 main-content">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h4>Total Employees</h4>
-            <p>156 <i class="fas fa-users"></i></p>
+    <!-- Recent Activities -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header text-white" style="background-color: #9FAC9F;">
+            <h5 class="mb-0">Recent Activities</h5>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h4>Present Today</h4>
-            <p>142 <i class="fas fa-user-check"></i></p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h4>On Leave</h4>
-            <p>14 <i class="fas fa-user-times"></i></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Activities -->
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header text-white" style="background-color: #9FAC9F;">
-              <h5 class="mb-0">Recent Activities</h5>
-            </div>
-            <div class="card-body">
-              <ul class="list-group">
-                <li class="list-group-item">
-                  <button class="activity-item">
-                    <i class="fas fa-user"></i> <span>Employee #123 checked in</span>
-                    <p class="text-muted ms-4 mb-0">Today at 8:00 AM</p>
-                  </button>
-                </li>
-                <li class="list-group-item">
-                  <button class="activity-item">
-                    <i class="fas fa-user"></i> <span>Employee #456 checked out</span>
-                    <p class="text-muted ms-4 mb-0">Today at 5:00 PM</p>
-                  </button>
-                </li>
-                <li class="list-group-item">
-                  <button class="activity-item">
-                    <i class="fas fa-user"></i> <span>Employee #789 requested leave</span>
-                    <p class="text-muted ms-4 mb-0">Today at 2:00 PM</p>
-                  </button>
-                </li>
-              </ul>
-            </div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item">
+                <button class="activity-item">
+                  <i class="fas fa-user"></i> <span>Employee #123 checked in</span>
+                  <p class="text-muted ms-4 mb-0">Today at 8:00 AM</p>
+                </button>
+              </li>
+              <li class="list-group-item">
+                <button class="activity-item">
+                  <i class="fas fa-user"></i> <span>Employee #456 checked out</span>
+                  <p class="text-muted ms-4 mb-0">Today at 5:00 PM</p>
+                </button>
+              </li>
+              <li class="list-group-item">
+                <button class="activity-item">
+                  <i class="fas fa-user"></i> <span>Employee #789 requested leave</span>
+                  <p class="text-muted ms-4 mb-0">Today at 2:00 PM</p>
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </div> <!-- End of main-content -->
+    </div>
+  </div> <!-- End Main Content -->
   </div>
-</div>
+</div> <!-- End Layout -->
 
 </body>
 </html>
