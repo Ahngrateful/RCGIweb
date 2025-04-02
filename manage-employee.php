@@ -101,9 +101,9 @@ $conn->close();
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: white;
+      background: #9FAC9F;
       padding: 15px 20px;
-      border-bottom: 1px solid #DFDDDD;
+      border-bottom: 1px solid #9FAC9F;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       height: 60px;
     }
@@ -143,6 +143,9 @@ $conn->close();
       width: 250px;
       border-right: 1px solid #ddd;
       padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .list-group-item {
@@ -191,7 +194,7 @@ $conn->close();
   <div class="navbar">
     <div class="left">
       <i class="fas fa-building"></i>
-      <span>Dashboard</span>
+      <span>Manage Employee</span>
     </div>
     <div class="right">
       <i class="fas fa-bell"></i>
@@ -217,6 +220,9 @@ $conn->close();
           <a href="manage-employee.php" class="list-group-item list-group-item-action active">
             <i class="fas fa-users sidebar-icon"></i> Manage Employees
           </a>
+          <a href="request-password.php" class="list-group-item list-group-item-action">
+            <i class="fas fa-users sidebar-icon"></i> Request Password
+          </a>
           <a href="settings.php" class="list-group-item list-group-item-action">
             <i class="fas fa-cog sidebar-icon"></i> Settings
           </a>
@@ -224,14 +230,18 @@ $conn->close();
             <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
           </a>
         </div>
+        <div class="w-100 text-center pb-3">
+      <img src="pics/rcgiph_logo.jpg" class="img-fluid" alt="Logo" style="max-width: 50%; height: auto;">
+    </div>
       </div>
 
       <!-- Main Content -->
       <div class="col-10 main-content">
+
         <form action="" method="POST" enctype="multipart/form-data" class="mt-4">
           <!-- Add New Employee -->
           <div class="card mb-4">
-            <div class="card-header fw-bold bg-light">Add New Employees</div>
+          <div class="card-header fw-bold text-white" style="background: #7A8D7A;">Add New Employees</div>
             <div class="card-body row">
               <!-- Profile Image -->
               <div class="col-3 text-center">
@@ -244,15 +254,15 @@ $conn->close();
                 <div class="row mb-3">
                   <div class="col-md-3">
                     <label class="form-label">Employee ID</label>
-                    <input type="text" class="form-control" name="employee_ID" placeholder="Enter employee ID" required>
+                    <input type="text" class="form-control" name="employee_ID" placeholder="Enter employee ID" autocomplete="off" required>
                   </div>
                   <div class="col-md-3">
                     <label class="form-label">Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="Enter name" required>
+                    <input type="text" class="form-control" name="name" placeholder="Enter name" autocomplete="off" required>
                   </div>
                   <div class="col-md-3">
                     <label class="form-label">Fingerprint ID</label>
-                    <input type="text" class="form-control" name="fingerprint_ID" placeholder="Enter fingerprint ID" required>
+                    <input type="text" class="form-control" name="fingerprint_ID" placeholder="Enter fingerprint ID" autocomplete="off" required>
                   </div>
                   <div class="col-md-3">
                     <label class="form-label">Hire Date</label>
@@ -293,8 +303,14 @@ $conn->close();
         </form>
 
         <!-- Employee List -->
-        <div class="card">
-          <div class="card-header fw-bold bg-light">Employee List</div>
+      <div class="card">
+        <div class="card-header fw-bold d-flex justify-content-between align-items-center" style="background: #7A8D7A;">
+          <span>Employee List</span>
+          <div class="input-group" style="width: 250px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Search by name..." />
+          </div>
+        </div>
           <div class="card-body table-responsive">
             <table class="table table-bordered text-center align-middle">
               <thead class="table-light">
@@ -345,6 +361,7 @@ $conn->close();
             </nav>
           </div>
         </div>
+        
       </div> <!-- End Main Content -->
     </div> <!-- End Row -->
   </div> <!-- End Container -->
