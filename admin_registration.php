@@ -1,3 +1,91 @@
+<?php
+session_start();
+
+// Make sure admin_ID is set in session
+if (!isset($_SESSION['admin_ID'])) {
+    echo "Unauthorized. Admin not logged in.";
+    exit;
+}
+$admin_id = $_SESSION['admin_ID'];
+
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_rcgi";
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if (isset($_POST['create'])) {
+    // Sanitize input
+    $id = $_SESSION['admin_id'] ?? rand(1, 1000);
+    $uname = trim($_POST['username']);
+    $password = trim($_POST['psw']);
+    $repeat_password = trim($_POST['psw-repeat']);
+
+    // Password policy: at least 12 chars, one uppercase, one digit
+    $password_pattern = "/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+]{12,}$/";
+    if (!preg_match($password_pattern, $password)) { 
+        echo "<script>
+                alert('Password must be at least 12 characters long, include at least one uppercase letter and one number.');
+                window.history.back();
+              </script>";
+        exit;
+    }
+
+    // Check if passwords match
+    if ($password !== $repeat_password) {
+        echo "<script>
+                alert('Passwords do not match.');
+                window.history.back();
+              </script>";
+        exit;
+    }
+
+    // Check if username already exists
+    $check_sql = "SELECT * FROM admin WHERE username = ?";
+    $stmt = $conn->prepare($check_sql);
+    $stmt->bind_param("s", $uname);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        echo "<script>
+                alert('Username already exists. Please choose another one.');
+                window.history.back();
+              </script>";
+        exit;
+    }
+
+    // Hash the password before storing
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert new admin (admin_ID will auto-increment)
+    $insert_sql = "INSERT INTO admin (admin_ID, username, password) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($insert_sql);
+    $stmt->bind_param("iss", $id, $uname, $hashed_password);
+
+    if ($stmt->execute()) {
+        echo "<script>
+                alert('New admin added successfully!');
+                window.location.href = 'settings.php';
+              </script>";
+    } else {
+        echo "<script>
+                alert('Error adding new admin. Please try again.');
+                window.history.back();
+              </script>";
+    }
+}
+
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +108,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: white;
+      background: #9FAC9F;
       padding: 15px 20px;
-      border-bottom: 1px solid #DFDDDD;
+      border-bottom: 1px solid #9FAC9F;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       height: 60px;
     }
@@ -62,6 +150,9 @@
       width: 250px;
       border-right: 1px solid #ddd;
       padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .list-group-item {
@@ -201,6 +292,9 @@
                 <a href="manage-employee.php" class="list-group-item list-group-item-action">
                     <i class="fas fa-users sidebar-icon"></i> Manage Employees
                 </a>
+                <a href="request-password.php" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users sidebar-icon"></i> Request Password
+                </a>
                 <a href="settings.php" class="list-group-item list-group-item-action active">
                     <i class="fas fa-cog sidebar-icon"></i> Settings
                 </a>
@@ -208,12 +302,16 @@
                     <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
                 </a>
             </div>
+            <div class="w-100 text-center pb-3">
+            <img src="pics/rcgiph_logo.jpg" class="img-fluid" alt="Logo" style="max-width: 50%; height: auto;">
+            </div>
         </div>
 
     <div class="admin-form">
+    <form action="" method="post">
 
         <label for="uname">Username</label>
-        <input type="text" placeholder="Enter Email" name="email" autocomplete="off" required />
+        <input type="text" placeholder="Enter Email" name="username" autocomplete="off" required />
 
         <label for="psw">Password</label>
         <input type="password" placeholder="Enter Password" name="psw" id="password" autocomplete="off" required />
@@ -222,6 +320,7 @@
         <label for="psw-repeat">Repeat Password</label>
         <input type="password" placeholder="Repeat Password" name="psw-repeat" id="passwordRepeat" autocomplete="off" required />
         <button type="submit" name="create" class="save-button">Add admin</button>
+    </form>
     </div>
 </div>
     </div>
