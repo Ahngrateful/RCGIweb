@@ -19,7 +19,32 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
+$sql = "
+SELECT 
+    at.*,  
+    e.name,
+    CASE 
+        WHEN (HOUR(at.time_in) * 60 + MINUTE(at.time_in)) >= (HOUR(e.shift_start_time) * 60 + MINUTE(e.shift_start_time) + 30) 
+        THEN 'Late'
+        WHEN (HOUR(at.time_in) * 60 + MINUTE(at.time_in)) >= (HOUR(e.shift_start_time) * 60 + MINUTE(e.shift_start_time)) 
+             AND (HOUR(at.time_in) * 60 + MINUTE(at.time_in)) < (HOUR(e.shift_start_time) * 60 + MINUTE(e.shift_start_time) + 30) 
+        THEN 'On Time'
+        ELSE 'Undertime'
+    END AS status
+FROM 
+    attendance at  
+JOIN 
+    employee e ON at.employee_id = e.employee_id;";
+
+$result = $conn->query($sql);
+
+
+
+
+
 $conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -44,9 +69,9 @@ $conn->close();
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: white;
+      background: #9FAC9F;
       padding: 15px 20px;
-      border-bottom: 1px solid #DFDDDD;
+      border-bottom: 1px solid #9FAC9F;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       height: 60px;
     }
@@ -86,6 +111,9 @@ $conn->close();
       width: 250px;
       border-right: 1px solid #ddd;
       padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .list-group-item {
@@ -158,6 +186,23 @@ $conn->close();
         .search-bar .btn i {
             margin-right: 5px;
         }
+
+        .statusBtn {
+        font-size: 0.85rem;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 20px;
+        }
+
+        .statusBtn.btn-success {
+        background-color: #BCCFB9;
+        border: none;
+        }
+
+        .statusBtn.btn-warning {
+        background-color: #C29B99;
+        border: none;
+        }
     </style>
 </head>
 <body>
@@ -166,7 +211,7 @@ $conn->close();
 <div class="navbar">
     <div class="left">
         <i class="fas fa-building"></i>
-        <span>Dashboard</span>
+        <span>View Attendance</span>
     </div>
     <div class="right">
         <i class="fas fa-bell"></i>
@@ -179,25 +224,32 @@ $conn->close();
 <div class="container-fluid">
     <div class="row vh-100">
     <!-- Sidebar -->
-    <div class="col-2 sidebar">
-        <div class="list-group">
-            <a href="dashboard.php" class="list-group-item list-group-item-action">
-                <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
-            </a>
-            <a href="view-attendance.php" class="list-group-item list-group-item-action active">
-                <i class="fas fa-clock sidebar-icon"></i> View Attendance
-            </a>
-            <a href="manage-employee.php" class="list-group-item list-group-item-action">
-                <i class="fas fa-users sidebar-icon"></i> Manage Employees
-            </a>
-            <a href="settings.php" class="list-group-item list-group-item-action">
-                <i class="fas fa-cog sidebar-icon"></i> Settings
-            </a>
-            <a href="logoutpage.php" class="list-group-item list-group-item-action">
-                <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
-            </a>
-        </div>
+    <div class="sidebar">
+    <div class="list-group w-100">
+      <a href="dashboard.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-tachometer-alt sidebar-icon"></i> Dashboard
+      </a>
+      <a href="view-attendance.php" class="list-group-item list-group-item-action active">
+        <i class="fas fa-clock sidebar-icon"></i> View Attendance
+      </a>
+      <a href="manage-employee.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-users sidebar-icon"></i> Manage Employees
+      </a>
+      <a href="request-password.php" class="list-group-item list-group-item-action">
+            <i class="fas fa-users sidebar-icon"></i> Request Password
+          </a>
+      <a href="settings.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-cog sidebar-icon"></i> Settings
+      </a>
+      <a href="logoutpage.php" class="list-group-item list-group-item-action">
+        <i class="fas fa-sign-out-alt sidebar-icon"></i> Logout
+      </a>
     </div>
+
+    <div class="w-100 text-center pb-3">
+      <img src="pics/rcgiph_logo.jpg" class="img-fluid" alt="Logo" style="max-width: 50%; height: auto;">
+    </div>
+  </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -264,30 +316,23 @@ $conn->close();
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>EMP001</td>
-                                    <td>Sharleen Olags</td>
-                                    <td>02/24/2025</td>
-                                    <td>9:00 AM</td>
-                                    <td><button class="btn statusBtn">On-Time</button></td>
-                                    <td>6:00 PM</td>
-                                </tr>
-                                <tr>
-                                    <td>EMP002</td>
-                                    <td>Francois Lopz</td>
-                                    <td>02/24/2025</td>
-                                    <td>9:30 AM</td>
-                                    <td><button class="btn statusBtn">Late</button></td>
-                                    <td>6:00 PM</td>
-                                </tr>
-                                <tr>
-                                    <td>EMP003</td>
-                                    <td>Shai Man</td>
-                                    <td>02/24/2025</td>
-                                    <td>9:00 AM</td>
-                                    <td><button class="btn statusBtn">On-Time</button></td>
-                                    <td>6:00 PM</td>
-                                </tr>
+                            <?php 
+                                if (isset($result) && $result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                echo"<tr>";
+                                    echo "<td>" . htmlspecialchars($row['employee_ID']) . "</td>";
+                                    echo "<td>". htmlspecialchars($row['name']) . "</td>";
+                                    echo "<td>". htmlspecialchars($row['date']) . "</td>";
+                                    echo "<td>". htmlspecialchars($row['time_in']) . "</td>";
+                                    $statusClass = ($row['status'] === 'Late') ? 'btn-warning' : 'btn-success';
+                                    echo '<td><button class="statusBtn btn ' . $statusClass . '">' . htmlspecialchars($row['status']) . '</button></td>';
+                                    echo "<td>". htmlspecialchars($row['time_out']) . "</td>";
+                                echo "</tr>";
+                                    }
+                                } else {
+                                echo "<tr><td colspan='8'>No employees found.</td></tr>";
+                                }
+                            ?>    
                             </tbody>
                         </table>
 
@@ -308,21 +353,7 @@ $conn->close();
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let statusButtons = document.querySelectorAll(".statusBtn");
 
-        statusButtons.forEach(button => {
-            let statusText = button.innerText.trim();
-
-            if (statusText === "On-Time") {
-                button.classList.add("btn-success");
-            } else if (statusText === "Late") {
-                button.classList.add("btn-warning");
-            }
-        });
-    });
-</script>
 
 </body>
 </html>
