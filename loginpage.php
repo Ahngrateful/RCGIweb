@@ -18,7 +18,7 @@ if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['psw'];
 
-    // Query to check username and password directly
+    // Query to check username and fetch the hashed password
     $stmt = $conn->prepare("SELECT admin_ID, username, password FROM admin WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -26,8 +26,10 @@ if (isset($_POST['login'])) {
     // Bind result
     $stmt->bind_result($admin_id, $admin_user, $db_password);
     $stmt->fetch();
+    $stmt->close();
 
-    if ($db_password === $password) {
+    // Verify password using password_verify
+    if (password_verify($password, $db_password)) {
         $_SESSION['admin_ID'] = $admin_id; // Store admin ID in session
         $_SESSION['admin_user'] = $admin_user;
 
@@ -36,14 +38,11 @@ if (isset($_POST['login'])) {
     } else {
         echo "<script>alert('Invalid username or password!');</script>";
     }
-
-    $stmt->close();
 }
+
 
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,9 +61,14 @@ font-weight: 600;
 font-size: 15px;
 line-height: 29px;
 color: #000000;
-background: #F3F4F6;
+background-image: url('pics/dylan-gillis-KdeqA3aTnBY-unsplash.jpg');
+background-size: cover;
+background-repeat: no-repeat;
 
 }
+
+
+
 
 h1{
 text-align: center;
@@ -153,8 +157,7 @@ img{
     </style>
 </head>
 <body>
-
-    <div class="containerlogin">
+    <div class="containerlogin" style="opacity: 80%;">
         <div class="login-form">
         <form action="" method="POST">
             <img src="pics\rcgiph_logo.jpg" alt="logo"/>
