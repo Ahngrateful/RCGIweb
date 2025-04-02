@@ -95,13 +95,14 @@ if (isset($_POST['submit'])) {
         }
 
         .timein-container {
-            max-width: 400px;
-            background: #FFFFFF;
-            border: 2px solid #7A8D7A;
+            background: #E5E0D8;
+            border: 2px solid #E5E0D8;
             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
             border-radius: 20px;
             padding: 30px;
             text-align: center;
+            max-width: 500px;
+            width: 100%;
         }
 
         .logo {
@@ -147,7 +148,7 @@ if (isset($_POST['submit'])) {
         .enter-button {
             width: 100%;
             padding: 10px;
-            background-color: #7A8D7A;
+            background-color: #CC9D61;
             color: white;
             border: none;
             border-radius: 5px;
@@ -157,7 +158,7 @@ if (isset($_POST['submit'])) {
         }
 
         .enter-button:hover {
-            background-color: #5f6e5f;
+            background-color: #E0BE92;
         }
     </style>
 </head>
