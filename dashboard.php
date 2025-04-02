@@ -42,11 +42,11 @@ $conn->close();
 
     .navbar {
       display: flex;
+      background: #9FAC9F;
       align-items: center;
       justify-content: space-between;
-      background: white;
       padding: 15px 20px;
-      border-bottom: 1px solid #DFDDDD;
+      border-bottom: 1px solid #9FAC9F;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
       height: 60px;
     }
@@ -205,6 +205,9 @@ $conn->close();
       <a href="manage-employee.php" class="list-group-item list-group-item-action">
         <i class="fas fa-users sidebar-icon"></i> Manage Employees
       </a>
+      <a href="request-password.php" class="list-group-item list-group-item-action ">
+            <i class="fas fa-users sidebar-icon"></i> Request Password
+          </a>
       <a href="settings.php" class="list-group-item list-group-item-action">
         <i class="fas fa-cog sidebar-icon"></i> Settings
       </a>
